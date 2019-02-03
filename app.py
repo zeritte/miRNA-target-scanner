@@ -39,7 +39,7 @@ def results(name):
     searchBox = driver.find_element_by_name("keywords")
     searchBox.send_keys(desiredMRNA)
     searchBox.send_keys(Keys.RETURN)
-    myElem = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'download_results_link')))
+    myElem = WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, 'download_results_link')))
     download_link = driver.find_element_by_id('download_results_link').get_attribute('href')
     response = pd.read_csv(download_link)
 
