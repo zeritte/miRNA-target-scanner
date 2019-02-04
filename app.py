@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, redirect, request
+from flask import Flask, Response, render_template, flash, redirect, request
 from wtforms import Form, validators, TextField
 from selenium import webdriver
 import csv, os
@@ -7,9 +7,17 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import pandas as pd
+from bs4 import BeautifulSoup
 app = Flask(__name__)
 
 app.secret_key = "super secret key"
+
+dict1 = dict()
+dict2 = dict()
+dict3 = dict()
+final_dict = dict()
+sorted_final_list = dict()
+driver = webdriver.PhantomJS()
 
 class ReusableForm(Form):
     name = TextField('Name:', validators=[validators.required()])
@@ -30,7 +38,7 @@ def hello_world():
     return render_template('hello.html', form=form)
 
 def dict1scrapper(desiredMRNA):
-    driver = webdriver.PhantomJS()
+    print('dict1 has been started to scan')
     #scraping data1
     driver.get("http://diana.imis.athena-innovation.gr/DianaTools/index.php?r=MicroT_CDS/index")
     searchBox = driver.find_element_by_name("keywords")
@@ -41,7 +49,6 @@ def dict1scrapper(desiredMRNA):
     response = pd.read_csv(download_link)
 
     #cleaning data1
-    dict1 = dict()
     for i in range(len(response)):
         if not response['Transcript Id'][i].startswith('UTR'):
             geneID = response['Gene Id(name)'][i]
@@ -52,46 +59,93 @@ def dict1scrapper(desiredMRNA):
     return dict1
 
 def dict2scrapper(desiredMRNA):
-    driver = webdriver.PhantomJS()
+    print('dict2 has been started to scan')
     #scraping data2
     driver.get("http://mirdb.org/cgi-bin/search.cgi")
     driver.find_element_by_xpath('//*[@id="table1"]/tbody/tr[2]/td/form/p/select/option[2]').click()
     searchBox = driver.find_element_by_name("searchBox")
     searchBox.send_keys(desiredMRNA)
     driver.find_element_by_xpath('//*[@id="table1"]/tbody/tr[2]/td/form/p/input[2]').click()
-    table = driver.find_element_by_css_selector("#table1")
-
+    
     #cleaning data2
-    dict2 = dict()
-    for row in table.find_elements_by_css_selector('tr'):
-        geneID = [d.text for d in row.find_elements_by_css_selector('td')][4]
+    soup = BeautifulSoup(driver.page_source, 'lxml')
+    tables = soup.findChildren('table')
+    my_table = tables[1]
+    rows = my_table.findChildren('tr')
+    for row in rows:
+        cells = row.findChildren('td')
+        geneID = cells[4].string
         if geneID == 'Gene Symbol':
             continue
-        targetScore = float([d.text for d in row.find_elements_by_css_selector('td')][2])/100
+        geneID = geneID[1:]
+        targetScore = float(float(cells[2].string)/100)
         dict2[geneID] = targetScore
     
     return dict2
 
-def dictIntersection(dict1, dict2):
-    final_dict = dict()
+def dict3scrapper(desiredMRNA):
+    print('dict3 has been started to scan')
+    #scraping data3
+    driver.get("http://www.targetscan.org/mmu_72/")
+    searchBox = driver.find_element_by_id('mirg_name')
+    searchBox.send_keys(desiredMRNA)
+    element = driver.find_element_by_xpath('/html/body/form/li[5]/input[2]')
+    element.location_once_scrolled_into_view
+    driver.find_element_by_xpath('/html/body/form/li[5]/input[2]').click()
+    driver.find_element_by_css_selector('body > form:nth-child(4) > a:nth-child(2)').click() 
+    download_link = driver.find_element_by_css_selector('body > a:nth-child(3)').get_attribute('href')
+    data3 = pd.read_excel(download_link)
+
+    min = 1
+    max = 0
+    for i in range(len(data3)):
+        try:
+            float(data3['Cumulative weighted context++ score'][i])
+            if float(data3['Cumulative weighted context++ score'][i]) != 0:
+                targetScore = -1*float(data3['Cumulative weighted context++ score'][i])
+            else:
+                targetScore = 0.0
+            if targetScore < min:
+                min = targetScore
+            if targetScore > max:
+                max = targetScore
+        except:
+            continue
+
+    for i in range(len(data3)):
+        try:
+            float(data3['Cumulative weighted context++ score'][i])
+            geneID = data3['Target gene'][i].lower().capitalize()
+            if float(data3['Cumulative weighted context++ score'][i]) != 0:
+                targetScore = -1*float(data3['Cumulative weighted context++ score'][i])
+            else:
+                targetScore = 0.0
+            targetScore = (targetScore-min)/(max-min)
+            dict3[geneID]=targetScore
+        except:
+            continue
+
+    return dict3
+
+def dictIntersection(dict1, dict2, dict3):
     for element in dict1:
         if element in dict2:
-            value1 = float(dict1[element])
-            value2 = float(dict2[element])
-            final_dict[element] = float((value1+value2)/2)
+            if element in dict3:
+                value1 = float(dict1[element])
+                value2 = float(dict2[element])
+                value3 = float(dict3[element])
+                final_dict[element] = float((value1+value2+value3)/3)
         
     return final_dict
 
 @app.route("/results/<name>")
 def results(name):
     desiredMRNA = name
-    
-    dict1 = dict1scrapper(desiredMRNA)
-    dict2 = dict2scrapper(desiredMRNA)
-
-    dictt = dictIntersection(dict1, dict2)
-    
-    return render_template("dictprinter.html", lengthoflist=len(dictt),  data=dictt)
+    dict1scrapper(desiredMRNA)
+    dict2scrapper(desiredMRNA)
+    dict3scrapper(desiredMRNA)
+    dictIntersection(dict1, dict2, dict3)    
+    return render_template("dictprinter.html", lengthoflist=len(final_dict),  data=final_dict)
 
 if __name__ == '__main__':
     app.run()
