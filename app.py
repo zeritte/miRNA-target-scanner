@@ -128,6 +128,7 @@ def dict3scrapper(desiredMRNA):
     return dict3
 
 def dictIntersection(dict1, dict2, dict3):
+    print("intersection has been started")
     for element in dict1:
         if element in dict2:
             if element in dict3:
