@@ -139,6 +139,10 @@ def dictIntersection(dict1, dict2, dict3):
         
     return final_dict
 
+def sorter(final_dict):
+    for w in sorted(final_dict, key=final_dict.get, reverse=True):
+        sorted_final_list[w] = final_dict[w]
+
 @app.route("/results/<name>")
 def results(name):
     desiredMRNA = name
@@ -146,7 +150,8 @@ def results(name):
     dict2scrapper(desiredMRNA)
     dict3scrapper(desiredMRNA)
     dictIntersection(dict1, dict2, dict3)    
-    return render_template("dictprinter.html", lengthoflist=len(final_dict),  data=final_dict)
+    sorter(final_dict)
+    return render_template("dictprinter.html", lengthoflist=len(sorted_final_list),  data=sorted_final_list)
 
 if __name__ == '__main__':
     app.run()
