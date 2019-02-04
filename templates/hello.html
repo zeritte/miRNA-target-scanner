@@ -5,7 +5,7 @@
     {% for message in messages %}
     <h1>{{ message[1] }}</h1> 
     <br>
-    <b><a> lets see </a></b>
+    <b><a> it should not take more than 30 seconds to load the page. if it tends to do, server will throw an error.</a></b>
     <br/><br/>
     {% endfor %}
 {% endif %}
@@ -15,7 +15,7 @@
     <div class="input text">
         {{ form.name.label }} {{ form.name }}
         <br/><br />
-        {{ form.best20.label }} {{ form.best20 }}
+        {{ form.best20.label }} {{ form.best20(checked=True) }}
     </div>
     <div class="input submit"><br />
         <input type="submit" value="Submit"></div>
