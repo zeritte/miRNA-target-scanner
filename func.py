@@ -51,7 +51,7 @@ def diana_scrapper(desiredMRNA, best20, specy):
 def mirdb_scrapper(desiredMRNA, best20, specy):
     print('mirdb has been started to scan')
     #scraping data2
-    driver.get("http://mirdb.org/cgi-bin/search.cgi")
+    driver.get("http://mirdb.org/")
     if specy=="mouse":
         driver.find_element_by_xpath('//*[@id="table1"]/tbody/tr[2]/td/form/p/select/option[2]').click()
     searchBox = driver.find_element_by_name("searchBox")

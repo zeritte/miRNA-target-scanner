@@ -5,7 +5,19 @@
 {% if messages %}
     {% for message in messages %}
     <h2>{{ message[1] }}</h2> 
-    <br>
+    <h3>
+        this app searchs for the entered miRNA name in 
+        <a href="http://diana.imis.athena-innovation.gr/DianaTools/index.php?r=MicroT_CDS/index"><u>diana</u></a>, 
+        <a href="http://mirdb.org/"><u>mirdb</u></a>
+         and 
+        <a href="http://www.targetscan.org/"><u>targetscan</u></a>.
+        <br>
+        then tries to find the concurrent ones and calculates their average value of targeting.
+        <br>
+        finally, lists them in descending order. if you choose to compare only the best 20 percent
+        <br>
+        of all databases, then it does as commanded.
+    </h3>
     <b><a> it should not take more than 30 seconds to load the page. if it tends to do, server will throw an error.</a></b>
     <br/><br/>
     {% endfor %}
@@ -19,6 +31,8 @@
         {{ form.best20.label }} {{ form.best20(checked=True) }}
         <br /><br />        
         {{ form.specy.label }} {{ form.specy }}
+        <br>
+        (the only species available in all of the three databases are them)
     </div>
     <div class="input submit"><br />
         <input type="submit" value="Submit"></div>
