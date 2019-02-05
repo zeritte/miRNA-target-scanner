@@ -1,9 +1,10 @@
 <title>miRNA Target Scanner</title>
 <center>
+    <h1>miRNA Target Scanner</h1>
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
     {% for message in messages %}
-    <h1>{{ message[1] }}</h1> 
+    <h2>{{ message[1] }}</h2> 
     <br>
     <b><a> it should not take more than 30 seconds to load the page. if it tends to do, server will throw an error.</a></b>
     <br/><br/>
@@ -16,6 +17,8 @@
         {{ form.name.label }} {{ form.name }}
         <br/><br />
         {{ form.best20.label }} {{ form.best20(checked=True) }}
+        <br /><br />        
+        {{ form.specy.label }} {{ form.specy }}
     </div>
     <div class="input submit"><br />
         <input type="submit" value="Submit"></div>

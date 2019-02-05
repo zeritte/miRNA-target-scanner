@@ -3,20 +3,22 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-import csv, os
 import pandas as pd
 from bs4 import BeautifulSoup
 
 driver = webdriver.PhantomJS()
 
-def dict1scrapper(desiredMRNA, best20):
-    print('dict1 has been started to scan')
+def diana_scrapper(desiredMRNA, best20, specy):
+    print('diana has been started to scan')
     #scraping data1
     driver.get("http://diana.imis.athena-innovation.gr/DianaTools/index.php?r=MicroT_CDS/index")
     searchBox = driver.find_element_by_name("keywords")
     searchBox.send_keys(desiredMRNA)
     searchBox.send_keys(Keys.RETURN)
-    myElem = WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, 'download_results_link')))
+    try:
+        myElem = WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, 'download_results_link')))
+    except:
+        return "error"
     download_link = driver.find_element_by_id('download_results_link').get_attribute('href')
     response = pd.read_csv(download_link)
 
@@ -40,19 +42,26 @@ def dict1scrapper(desiredMRNA, best20):
             i+=1
             if(i>=len(tempdict_sorted)/5):
                 break
+                
     if not best20:
         returndict = tempdict
 
     return returndict
 
-def dict2scrapper(desiredMRNA, best20):
-    print('dict2 has been started to scan')
+def mirdb_scrapper(desiredMRNA, best20, specy):
+    print('mirdb has been started to scan')
     #scraping data2
     driver.get("http://mirdb.org/cgi-bin/search.cgi")
-    driver.find_element_by_xpath('//*[@id="table1"]/tbody/tr[2]/td/form/p/select/option[2]').click()
+    if specy=="mouse":
+        driver.find_element_by_xpath('//*[@id="table1"]/tbody/tr[2]/td/form/p/select/option[2]').click()
     searchBox = driver.find_element_by_name("searchBox")
     searchBox.send_keys(desiredMRNA)
     driver.find_element_by_xpath('//*[@id="table1"]/tbody/tr[2]/td/form/p/input[2]').click()
+    try:
+        driver.find_element_by_css_selector('body > table:nth-child(14) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(3) > h2:nth-child(2) > font:nth-child(1)')
+        return "error"
+    except:
+        pass
     
     #cleaning data2
     tempdict = dict()
@@ -85,16 +94,22 @@ def dict2scrapper(desiredMRNA, best20):
         
     return returndict
 
-def dict3scrapper(desiredMRNA, best20):
-    print('dict3 has been started to scan')
+def targetscan_scrapper(desiredMRNA, best20, specy):
+    print('targetscan has been started to scan')
     #scraping data3
-    driver.get("http://www.targetscan.org/mmu_72/")
+    if specy=='mouse':
+        driver.get("http://www.targetscan.org/mmu_72/")
+    elif specy=="human":
+        driver.get("http://www.targetscan.org/vert_72/")
     searchBox = driver.find_element_by_id('mirg_name')
     searchBox.send_keys(desiredMRNA)
     element = driver.find_element_by_xpath('/html/body/form/li[5]/input[2]')
     element.location_once_scrolled_into_view
     driver.find_element_by_xpath('/html/body/form/li[5]/input[2]').click()
-    driver.find_element_by_css_selector('body > form:nth-child(4) > a:nth-child(2)').click() 
+    try:
+        driver.find_element_by_css_selector('body > form:nth-child(4) > a:nth-child(2)').click() 
+    except:
+        return "error"
     download_link = driver.find_element_by_css_selector('body > a:nth-child(3)').get_attribute('href')
     data3 = pd.read_excel(download_link)
 
@@ -160,7 +175,7 @@ def dict3scrapper(desiredMRNA, best20):
         
     return returndict
 
-def dictIntersection(dict1, dict2, dict3):
+def list_intersection(dict1, dict2, dict3):
     print("intersection has been started")
     final_dict = dict()
     for element in dict1:

@@ -1,7 +1,7 @@
 from flask import Flask, Response, render_template, flash, redirect, request
-from wtforms import Form, validators, TextField, BooleanField
+from wtforms import Form, validators, TextField, BooleanField, SelectField
 import time
-from func import dict1scrapper, dict2scrapper, dict3scrapper, dictIntersection, sorter
+from func import diana_scrapper, mirdb_scrapper, targetscan_scrapper, list_intersection, sorter
 
 app = Flask(__name__)
 
@@ -9,7 +9,8 @@ app.secret_key = "super secret key"
 
 class ReusableForm(Form):
     name = TextField('Name:', validators=[validators.required()])
-    best20 = BooleanField('Only best 20 percent?')
+    best20 = BooleanField('Only best 20 percent?: ')
+    specy = SelectField('Species: ', choices = [('mouse','Mouse'),('human','Human')])
 
 @app.route("/", methods=['GET', 'POST'])
 def hello_world():
@@ -22,24 +23,32 @@ def hello_world():
             best20 = "1"
         except:
             best20 = "0"
+        specy=request.form['specy']
     if form.validate():
-        return redirect("/results/%s/%s" %(best20, name))
+        return redirect("/results/%s/%s/%s" %(specy, name, best20))
     else:
         flash('enter a miRNA name')
     return render_template('hello.html', form=form)
 
-@app.route("/results/<best20>/<name>")
-def results(best20, name):
+@app.route("/results/<specy>/<name>/<best20>")
+def results(specy, name, best20):
     start = time.time()
     desiredMRNA = name
     best20 = int(best20)
-    list1 = dict1scrapper(desiredMRNA, best20)
-    list2 = dict2scrapper(desiredMRNA, best20)
-    list3 = dict3scrapper(desiredMRNA, best20)
-    listIntersection = dictIntersection(list1, list2, list3)    
+    diana = diana_scrapper(desiredMRNA, best20, specy)
+    if diana=="error":
+        return render_template("error.html", error="diana threw an error")
+    mirdb = mirdb_scrapper(desiredMRNA, best20, specy)
+    if mirdb=="error":
+        return render_template("error.html", error="mirdb threw an error")
+    targetscan = targetscan_scrapper(desiredMRNA, best20, specy)
+    if targetscan=="error":
+        return render_template("error.html", error="targetscan threw an error")
+    listIntersection = list_intersection(diana, mirdb, targetscan)    
     sorted_final_list = sorter(listIntersection)
     end = time.time()
     print(end - start)
+    
     return render_template("dictprinter.html", lengthoflist=len(sorted_final_list),  data=sorted_final_list)
 
 if __name__ == '__main__':
