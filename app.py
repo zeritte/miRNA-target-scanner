@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.secret_key = "super secret key"
 
 class ReusableForm(Form):
-    name = TextField('Name:', validators=[validators.required()])
+    name = TextField('miRNA Name:', validators=[validators.required()])
     best20 = BooleanField('Only best 20 percent?: ')
     specy = SelectField('Species: ', choices = [('mouse','Mouse'),('human','Human')])
 
