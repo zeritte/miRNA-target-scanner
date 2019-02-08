@@ -44,11 +44,11 @@ def results(specy, name, best20):
     targetscan = targetscan_scrapper(desiredMRNA, best20, specy)
     if targetscan=="error":
         return render_template("error.html", error="targetscan threw an error")
-    listIntersection = list_intersection(diana, mirdb, targetscan)    
+    listIntersection = list_intersection(diana, mirdb, targetscan)
     sorted_final_list = sorter(listIntersection)
     end = time.time()
     print(end - start)
-    
+
     return render_template("dictprinter.html", lengthoflist=len(sorted_final_list),  data=sorted_final_list)
 
 if __name__ == '__main__':
