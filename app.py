@@ -1,4 +1,4 @@
-from flask import Flask, Response, render_template, flash, redirect, request
+from flask import Flask, Response, render_template, flash, redirect, request, url_for
 from wtforms import Form, validators, TextField, BooleanField, SelectField
 import time
 from func import diana_scrapper, mirdb_scrapper, targetscan_scrapper, list_intersection, sorter
@@ -25,31 +25,56 @@ def hello_world():
             best20 = "0"
         specy=request.form['specy']
     if form.validate():
-        return redirect("/results/%s/%s/%s" %(specy, name, best20))
+        return redirect(url_for('diana', name=name, specy=specy, best20=best20))
     else:
         flash('enter a miRNA name')
     return render_template('hello.html', form=form)
 
-@app.route("/results/<specy>/<name>/<best20>")
-def results(specy, name, best20):
-    start = time.time()
-    desiredMRNA = name
-    best20 = int(best20)
-    diana = diana_scrapper(desiredMRNA, best20, specy)
-    if diana=="error":
+@app.route('/diana')
+def diana():
+    global diana_list
+    desiredMRNA = request.args.get('name')
+    best20 = int(request.args.get('best20'))
+    specy = request.args.get('specy')
+    diana_list = diana_scrapper(desiredMRNA, best20, specy)
+    if diana_list=="error":
         return render_template("error.html", error="diana threw an error")
-    mirdb = mirdb_scrapper(desiredMRNA, best20, specy)
-    if mirdb=="error":
-        return render_template("error.html", error="mirdb threw an error")
-    targetscan = targetscan_scrapper(desiredMRNA, best20, specy)
-    if targetscan=="error":
-        return render_template("error.html", error="targetscan threw an error")
-    listIntersection = list_intersection(diana, mirdb, targetscan)
-    sorted_final_list = sorter(listIntersection)
-    end = time.time()
-    print(end - start)
 
-    return render_template("dictprinter.html", lengthoflist=len(sorted_final_list),  data=sorted_final_list)
+    return redirect(url_for('mirdb', name=desiredMRNA, specy=specy, best20=best20))
+
+@app.route('/mirdb')
+def mirdb():
+    global mirdb_list
+    desiredMRNA = request.args.get('name')
+    best20 = int(request.args.get('best20'))
+    specy = request.args.get('specy')
+    mirdb_list = mirdb_scrapper(desiredMRNA, best20, specy)
+
+    if mirdb_list=="error":
+        return render_template("error.html", error="mirdb threw an error")
+
+    return redirect(url_for('targetscan', name=desiredMRNA, specy=specy, best20=best20))
+
+@app.route('/targetscan')
+def targetscan():
+    global targetscan_list
+    desiredMRNA = request.args.get('name')
+    best20 = int(request.args.get('best20'))
+    specy = request.args.get('specy')
+    targetscan_list = targetscan_scrapper(desiredMRNA, best20, specy)
+
+    if targetscan_list=="error":
+        return render_template("error.html", error="mirdb threw an error")
+
+    return redirect(url_for('results', name=desiredMRNA, specy=specy, best20=best20))
+
+@app.route('/results')
+def results():
+    intersection = list_intersection(diana_list, mirdb_list, targetscan_list)
+    intersection = sorter(intersection)
+
+    return render_template("dictprinter.html", data=intersection, lengthoflist=len(intersection))
+
 
 if __name__ == '__main__':
     app.run()

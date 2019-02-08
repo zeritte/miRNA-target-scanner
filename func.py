@@ -32,7 +32,7 @@ def diana_scrapper(desiredMRNA, best20, specy):
             geneID = geneID[geneID.find("(")+1:geneID.find(")")]
             targetScore = response['miTG score'][i]
             tempdict[geneID] = targetScore
-    
+
     #best20 arranger
     if best20:
         tempdict_sorted = sorter(tempdict)
@@ -42,7 +42,7 @@ def diana_scrapper(desiredMRNA, best20, specy):
             i+=1
             if(i>=len(tempdict_sorted)/5):
                 break
-                
+
     if not best20:
         returndict = tempdict
 
@@ -62,7 +62,7 @@ def mirdb_scrapper(desiredMRNA, best20, specy):
         return "error"
     except:
         pass
-    
+
     #cleaning data2
     tempdict = dict()
     tempdict_sorted = dict()
@@ -91,7 +91,7 @@ def mirdb_scrapper(desiredMRNA, best20, specy):
                 break
     if not best20:
         returndict = tempdict
-        
+
     return returndict
 
 def targetscan_scrapper(desiredMRNA, best20, specy):
@@ -107,7 +107,7 @@ def targetscan_scrapper(desiredMRNA, best20, specy):
     element.location_once_scrolled_into_view
     driver.find_element_by_xpath('/html/body/form/li[5]/input[2]').click()
     try:
-        driver.find_element_by_css_selector('body > form:nth-child(4) > a:nth-child(2)').click() 
+        driver.find_element_by_css_selector('body > form:nth-child(4) > a:nth-child(2)').click()
     except:
         return "error"
     download_link = driver.find_element_by_css_selector('body > a:nth-child(3)').get_attribute('href')
@@ -172,7 +172,7 @@ def targetscan_scrapper(desiredMRNA, best20, specy):
                 returndict[geneID]=targetScore
             except:
                 continue
-        
+
     return returndict
 
 def list_intersection(dict1, dict2, dict3):
@@ -185,7 +185,7 @@ def list_intersection(dict1, dict2, dict3):
                 value2 = float(dict2[element])
                 value3 = float(dict3[element])
                 final_dict[element] = float((value1+value2+value3)/3)
-        
+
     return final_dict
 
 def sorter(any_dict):
