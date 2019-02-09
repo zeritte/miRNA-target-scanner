@@ -1,29 +1,19 @@
 <title>miRNA Target Scanner</title>
 <head><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
 <center>
-    <h1>miRNA Target Scanner</h1>
-{% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
-    {% for message in messages %}
-    <h2>{{ message[1] }}</h2>
-    <h3>
+    <h3>miRNA Target Scanner</h3>
+    <b>
         this app searchs for the entered miRNA name in
         <a href="http://diana.imis.athena-innovation.gr/DianaTools/index.php?r=MicroT_CDS/index"><u>diana</u></a>,
         <a href="http://mirdb.org/"><u>mirdb</u></a>
          and
         <a href="http://www.targetscan.org/"><u>targetscan</u></a>.
-        <br>
         then tries to find the concurrent ones and calculates their average value of targeting.
-        <br>
         finally, lists them in descending order. if you choose to compare only the best 20 percent
-        <br>
         of all databases, then it does as commanded.
-    </h3>
-    <b><a> it should not take more than 30 seconds to load the page. if it tends to do, server will throw an error.</a></b>
+    </b>
+    <a><u>because it is a free server, it may get overloaded and crahsed.</u></a>
     <br/><br/>
-    {% endfor %}
-{% endif %}
-{% endwith %}
 <form action="" method="post">
     {{ form.csrf }}
     <div class="input text">
