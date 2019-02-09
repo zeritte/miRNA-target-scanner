@@ -1,6 +1,5 @@
 from flask import Flask, Response, render_template, flash, redirect, request, url_for
 from wtforms import Form, validators, TextField, BooleanField, SelectField
-import time
 from func import diana_scrapper, mirdb_scrapper, targetscan_scrapper, list_intersection, sorter
 
 app = Flask(__name__)

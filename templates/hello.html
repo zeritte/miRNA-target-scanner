@@ -1,15 +1,16 @@
 <title>miRNA Target Scanner</title>
+<head><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
 <center>
     <h1>miRNA Target Scanner</h1>
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
     {% for message in messages %}
-    <h2>{{ message[1] }}</h2> 
+    <h2>{{ message[1] }}</h2>
     <h3>
-        this app searchs for the entered miRNA name in 
-        <a href="http://diana.imis.athena-innovation.gr/DianaTools/index.php?r=MicroT_CDS/index"><u>diana</u></a>, 
+        this app searchs for the entered miRNA name in
+        <a href="http://diana.imis.athena-innovation.gr/DianaTools/index.php?r=MicroT_CDS/index"><u>diana</u></a>,
         <a href="http://mirdb.org/"><u>mirdb</u></a>
-         and 
+         and
         <a href="http://www.targetscan.org/"><u>targetscan</u></a>.
         <br>
         then tries to find the concurrent ones and calculates their average value of targeting.
@@ -29,7 +30,7 @@
         {{ form.name.label }} {{ form.name }}
         <br/><br />
         {{ form.best20.label }} {{ form.best20(checked=True) }}
-        <br /><br />        
+        <br /><br />
         {{ form.specy.label }} {{ form.specy }}
         <br>
         (the only species available in all of the three databases are them)
