@@ -6,6 +6,10 @@ app = Flask(__name__)
 
 app.secret_key = "super secret key"
 
+global diana_list
+global mirdb_list
+global targetscan_list
+
 class ReusableForm(Form):
     name = TextField('miRNA Name:', validators=[validators.required()])
     best20 = BooleanField('Only best 20 percent? ')
@@ -69,6 +73,9 @@ def targetscan():
 
 @app.route('/results')
 def results():
+    global diana_list
+    global mirdb_list
+    global targetscan_list
     intersection = list_intersection(diana_list, mirdb_list, targetscan_list)
     intersection = sorter(intersection)
 
