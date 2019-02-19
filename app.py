@@ -22,7 +22,6 @@ class ReusableForm(Form):
 def hello_world():
     form = ReusableForm(request.form)
     global best20, name, specy
-    print(form.errors)
     if request.method == 'POST':
         name=request.form['name']
         try:
@@ -41,6 +40,7 @@ def hello_world():
 @app.route('/diana')
 def diana():
     global diana_list, name, specy, best20
+    print("1name is", name)
     diana_list = diana_scrapper(name, best20, specy)
 
     if diana_list=="error":
@@ -51,7 +51,7 @@ def diana():
 @app.route('/mirdb')
 def mirdb():
     global mirdb_list, name, specy, best20
-    print("name is", name)
+    print("2name is", name)
     mirdb_list = mirdb_scrapper(name, best20, specy)
 
     if mirdb_list=="error":
