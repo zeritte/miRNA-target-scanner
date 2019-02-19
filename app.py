@@ -40,7 +40,6 @@ def hello_world():
 @app.route('/diana')
 def diana():
     global diana_list, name, specy, best20
-    print("1name is", name)
     diana_list = diana_scrapper(name, best20, specy)
 
     if diana_list=="error":
@@ -51,7 +50,6 @@ def diana():
 @app.route('/mirdb')
 def mirdb():
     global mirdb_list, name, specy, best20
-    print("2name is", name)
     mirdb_list = mirdb_scrapper(name, best20, specy)
 
     if mirdb_list=="error":
@@ -81,4 +79,10 @@ def results():
 
 
 if __name__ == '__main__':
+    global best20
+    global name
+    global specy
+    global diana_list
+    global mirdb_list
+    global targetscan_list
     app.run()
