@@ -81,17 +81,16 @@ def results():
     global diana_list
     global mirdb_list
     global targetscan_list
-    intersection = list_intersection(diana_list, mirdb_list, targetscan_list)
+    local_list1 = diana_list
+    local_list2 = mirdb_list
+    local_list3 = targetscan_list
+    intersection = list_intersection(local_list1, local_list2, local_list3)
     intersection = sorter(intersection)
 
     return render_template("dictprinter.html", data=intersection, lengthoflist=len(intersection))
 
 
 if __name__ == '__main__':
-    global best20
-    global name
-    global specy
-    global diana_list
-    global mirdb_list
-    global targetscan_list
+    global best20, name, specy, diana_list, mirdb_list, targetscan_list
+    app.debug = True
     app.run()
