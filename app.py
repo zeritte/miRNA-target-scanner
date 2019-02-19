@@ -40,7 +40,10 @@ def hello_world():
 @app.route('/diana')
 def diana():
     global diana_list, name, specy, best20
-    diana_list = diana_scrapper(name, best20, specy)
+    local_name = name
+    local_specy = specy
+    local_best20 = best20
+    diana_list = diana_scrapper(local_name, local_best20, local_specy)
 
     if diana_list=="error":
         return render_template("error.html", error="diana threw an error")
@@ -50,7 +53,10 @@ def diana():
 @app.route('/mirdb')
 def mirdb():
     global mirdb_list, name, specy, best20
-    mirdb_list = mirdb_scrapper(name, best20, specy)
+    local_name = name
+    local_specy = specy
+    local_best20 = best20
+    mirdb_list = mirdb_scrapper(local_name, local_best20, local_specy)
 
     if mirdb_list=="error":
         return render_template("error.html", error="mirdb threw an error")
@@ -60,7 +66,10 @@ def mirdb():
 @app.route('/targetscan')
 def targetscan():
     global targetscan_list, name, specy, best20
-    targetscan_list = targetscan_scrapper(name, best20, specy)
+    local_name = name
+    local_specy = specy
+    local_best20 = best20
+    targetscan_list = targetscan_scrapper(local_name, local_best20, local_specy)
 
     if targetscan_list=="error":
         return render_template("error.html", error="mirdb threw an error")
