@@ -40,6 +40,7 @@ def hello_world():
 @app.route('/diana')
 def diana():
     global diana_list, name, specy, best20
+    print("name is",name)
     diana_list = diana_scrapper(name, best20, specy)
     if diana_list=="error":
         return render_template("error.html", error="diana threw an error")
