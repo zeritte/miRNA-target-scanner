@@ -12,9 +12,6 @@ global specy
 global diana_list
 global mirdb_list
 global targetscan_list
-diana_list = dict()
-mirdb_list = dict()
-targetscan_list = dict()
 
 class ReusableForm(Form):
     name = TextField('miRNA Name:', validators=[validators.required()])
@@ -94,10 +91,7 @@ def results():
         global diana_list
         global mirdb_list
         global targetscan_list
-        local_list1 = diana_list
-        local_list2 = mirdb_list
-        local_list3 = targetscan_list
-        intersection = list_intersection(local_list1, local_list2, local_list3)
+        intersection = list_intersection(diana_list, mirdb_list, targetscan_list)
         intersection = sorter(intersection)
 
         return render_template("dictprinter.html", data=intersection, lengthoflist=len(intersection))
