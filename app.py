@@ -43,11 +43,11 @@ def diana():
         global diana_list, name, specy, best20
         local_name = name
         local_specy = specy
-        local_best20 = best20
+        local_best20 = int(best20)
         diana_list = diana_scrapper(local_name, local_best20, local_specy)
 
         if diana_list=="error":
-            return render_template("error.html", error="diana threw an error")
+            return render_template("error.html", error="diana threw an error, please check your miRNA name")
 
         return render_template('dianasearchdone.html')
     except:
@@ -59,11 +59,11 @@ def mirdb():
         global mirdb_list, name, specy, best20
         local_name = name
         local_specy = specy
-        local_best20 = best20
+        local_best20 = int(best20)
         mirdb_list = mirdb_scrapper(local_name, local_best20, local_specy)
 
         if mirdb_list=="error":
-            return render_template("error.html", error="mirdb threw an error")
+            return render_template("error.html", error="mirdb threw an error, please check your miRNA name")
 
         return render_template('mirdbsearchdone.html')
     except:
@@ -75,11 +75,11 @@ def targetscan():
         global targetscan_list, name, specy, best20
         local_name = name
         local_specy = specy
-        local_best20 = best20
+        local_best20 = int(best20)
         targetscan_list = targetscan_scrapper(local_name, local_best20, local_specy)
 
         if targetscan_list=="error":
-            return render_template("error.html", error="mirdb threw an error")
+            return render_template("error.html", error="targetscan threw an error, please check your miRNA name")
 
         return render_template('targetscansearchdone.html')
     except:
@@ -92,6 +92,9 @@ def results():
         global mirdb_list
         global targetscan_list
         intersection = list_intersection(diana_list, mirdb_list, targetscan_list)
+        del diana_list
+        del mirdb_list
+        del targetscan_list
         intersection = sorter(intersection)
 
         return render_template("dictprinter.html", data=intersection, lengthoflist=len(intersection))
