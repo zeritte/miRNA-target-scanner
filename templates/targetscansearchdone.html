@@ -1,10 +1,27 @@
+<link rel="stylesheet" type="text/css" href="../../../static/css/styleDict.css">
 <title>miRNA Target Scanner</title>
 <head><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
 <center>
     <h3>targetscan database scan is done, click button below to continue.</h3>
     <br/><br/>
-<form action="/results">
+<form action={{ url_for('results', name=name, specy=specy, best20=best20) }}>
     <div class="input submit"><br />
     <input type="submit" value="Show results"></div>
 </form>
+<br/>
+<table class="centered thick-border">
+    <tr>
+        <th colspan="2">Targetscan's results: {{ lengthoflist }}</th>
+    </tr>
+    <tr>
+        <th>Gene ID</th>
+        <th>Average Target Value</th>
+    </tr>
+    {% for w in data %}
+    <tr>
+        <td>{{ w }}</td>
+        <td>{{ data[w] }}</td>
+    </tr>
+    {% endfor %}
+</table>
 </center>

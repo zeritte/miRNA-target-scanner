@@ -1,11 +1,28 @@
+<link rel="stylesheet" type="text/css" href="../../../static/css/styleDict.css">
 <title>miRNA Target Scanner</title>
 <head><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
 <center>
     <h3>diana database scan is done, click button below to continue.</h3>
     <h5>the longest search is the next one, mirdb. it will probably fail. if it does, go back to search page and try again.</h5>
     <br/><br/>
-<form action="/mirdb">
+<form action={{ url_for('mirdb', name=name, specy=specy, best20=best20) }}>
     <div class="input submit"><br />
     <input type="submit" value="Continue to mirdb"></div>
 </form>
+<br/>
+<table class="centered thick-border">
+    <tr>
+        <th colspan="2">Diana's results: {{ lengthoflist }}</th>
+    </tr>
+    <tr>
+        <th>Gene ID</th>
+        <th>Average Target Value</th>
+    </tr>
+    {% for w in data %}
+    <tr>
+        <td>{{ w }}</td>
+        <td>{{ data[w] }}</td>
+    </tr>
+    {% endfor %}
+</table>
 </center>

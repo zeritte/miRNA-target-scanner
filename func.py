@@ -10,6 +10,7 @@ driver = webdriver.PhantomJS()
 
 def diana_scrapper(desiredMRNA, best20, specy):
     print('diana has been started to scan')
+    best20 = int(best20)
     #scraping data1
     driver.get("http://diana.imis.athena-innovation.gr/DianaTools/index.php?r=MicroT_CDS/index")
     searchBox = driver.find_element_by_name("keywords")
@@ -50,6 +51,7 @@ def diana_scrapper(desiredMRNA, best20, specy):
 
 def mirdb_scrapper(desiredMRNA, best20, specy):
     print('mirdb has been started to scan')
+    best20 = int(best20)
     #scraping data2
     driver.get("http://mirdb.org/")
     if specy=="mouse":
@@ -96,6 +98,7 @@ def mirdb_scrapper(desiredMRNA, best20, specy):
 
 def targetscan_scrapper(desiredMRNA, best20, specy):
     print('targetscan has been started to scan')
+    best20 = int(best20)
     #scraping data3
     if specy=='mouse':
         driver.get("http://www.targetscan.org/mmu_72/")
