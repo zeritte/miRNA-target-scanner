@@ -18,6 +18,7 @@ class ReusableForm(Form):
     best20 = BooleanField('Only best 20 percent? ')
     specy = SelectField('Species: ', choices = [('mouse','Mouse'),('human','Human')])
 
+
 @app.route("/", methods=['GET', 'POST'])
 def hello_world():
     form = ReusableForm(request.form)
