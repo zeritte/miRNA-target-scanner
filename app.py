@@ -12,6 +12,9 @@ global specy
 global diana_list
 global mirdb_list
 global targetscan_list
+diana_list = dict()
+mirdb_list = dict()
+targetscan_list = dict()
 
 class ReusableForm(Form):
     name = TextField('miRNA Name:', validators=[validators.required()])
@@ -39,58 +42,69 @@ def hello_world():
 
 @app.route('/diana')
 def diana():
-    global diana_list, name, specy, best20
-    local_name = name
-    local_specy = specy
-    local_best20 = best20
-    diana_list = diana_scrapper(local_name, local_best20, local_specy)
+    try:
+        global diana_list, name, specy, best20
+        local_name = name
+        local_specy = specy
+        local_best20 = best20
+        diana_list = diana_scrapper(local_name, local_best20, local_specy)
 
-    if diana_list=="error":
-        return render_template("error.html", error="diana threw an error")
+        if diana_list=="error":
+            return render_template("error.html", error="diana threw an error")
 
-    return render_template('dianasearchdone.html')
+        return render_template('dianasearchdone.html')
+    except:
+        return render_template("error.html", error="there is a server error")
 
 @app.route('/mirdb')
 def mirdb():
-    global mirdb_list, name, specy, best20
-    local_name = name
-    local_specy = specy
-    local_best20 = best20
-    mirdb_list = mirdb_scrapper(local_name, local_best20, local_specy)
+    try:
+        global mirdb_list, name, specy, best20
+        local_name = name
+        local_specy = specy
+        local_best20 = best20
+        mirdb_list = mirdb_scrapper(local_name, local_best20, local_specy)
 
-    if mirdb_list=="error":
-        return render_template("error.html", error="mirdb threw an error")
+        if mirdb_list=="error":
+            return render_template("error.html", error="mirdb threw an error")
 
-    return render_template('mirdbsearchdone.html')
+        return render_template('mirdbsearchdone.html')
+    except:
+        return render_template("error.html", error="there is a server error")
 
 @app.route('/targetscan')
 def targetscan():
-    global targetscan_list, name, specy, best20
-    local_name = name
-    local_specy = specy
-    local_best20 = best20
-    targetscan_list = targetscan_scrapper(local_name, local_best20, local_specy)
+    try:
+        global targetscan_list, name, specy, best20
+        local_name = name
+        local_specy = specy
+        local_best20 = best20
+        targetscan_list = targetscan_scrapper(local_name, local_best20, local_specy)
 
-    if targetscan_list=="error":
-        return render_template("error.html", error="mirdb threw an error")
+        if targetscan_list=="error":
+            return render_template("error.html", error="mirdb threw an error")
 
-    return render_template('targetscansearchdone.html')
+        return render_template('targetscansearchdone.html')
+    except:
+        return render_template("error.html", error="there is a server error")
 
 @app.route('/results')
 def results():
-    global diana_list
-    global mirdb_list
-    global targetscan_list
-    local_list1 = diana_list
-    local_list2 = mirdb_list
-    local_list3 = targetscan_list
-    intersection = list_intersection(local_list1, local_list2, local_list3)
-    intersection = sorter(intersection)
+    try:
+        global diana_list
+        global mirdb_list
+        global targetscan_list
+        local_list1 = diana_list
+        local_list2 = mirdb_list
+        local_list3 = targetscan_list
+        intersection = list_intersection(local_list1, local_list2, local_list3)
+        intersection = sorter(intersection)
 
-    return render_template("dictprinter.html", data=intersection, lengthoflist=len(intersection))
+        return render_template("dictprinter.html", data=intersection, lengthoflist=len(intersection))
+    except:
+        return render_template("error.html", error="there is a server error")
 
 
 if __name__ == '__main__':
-    global best20, name, specy, diana_list, mirdb_list, targetscan_list
     app.debug = True
     app.run()
