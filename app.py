@@ -75,16 +75,19 @@ def targetscan(name, specy, best20):
 
 @app.route('/results/<name>/<specy>/<best20>')
 def results(name, specy, best20):
-    global diana_list
-    global mirdb_list
-    global targetscan_list
-    intersection = list_intersection(diana_list, mirdb_list, targetscan_list)
-    del diana_list
-    del mirdb_list
-    del targetscan_list
-    intersection = sorter(intersection)
+    try:
+        global diana_list
+        global mirdb_list
+        global targetscan_list
+        intersection = list_intersection(diana_list, mirdb_list, targetscan_list)
+        del diana_list
+        del mirdb_list
+        del targetscan_list
+        intersection = sorter(intersection)
 
-    return render_template("dictprinter.html", data=intersection, lengthoflist=len(intersection))
+        return render_template("dictprinter.html", data=intersection, lengthoflist=len(intersection))
+    except:
+        return render_template("error.html", error="there is a server error")
 
 
 if __name__ == '__main__':
