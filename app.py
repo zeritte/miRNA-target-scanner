@@ -45,6 +45,7 @@ def diana():
         local_name = name
         local_specy = specy
         local_best20 = int(best20)
+        print(local_best20)
         diana_list = diana_scrapper(local_name, local_best20, local_specy)
 
         if diana_list=="error":
@@ -61,6 +62,7 @@ def mirdb():
         local_name = name
         local_specy = specy
         local_best20 = int(best20)
+        print(local_best20)
         mirdb_list = mirdb_scrapper(local_name, local_best20, local_specy)
 
         if mirdb_list=="error":
@@ -77,6 +79,7 @@ def targetscan():
         local_name = name
         local_specy = specy
         local_best20 = int(best20)
+        print(local_best20)
         targetscan_list = targetscan_scrapper(local_name, local_best20, local_specy)
 
         if targetscan_list=="error":
