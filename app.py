@@ -41,6 +41,7 @@ def diana(name, specy, best20):
         if data.diana_list=="error":
             return render_template("error.html", error="diana threw an error, please check your miRNA name")
 
+        print("in diana, diana list:",len(data.diana_list))
         return render_template('dianasearchdone.html', name=name, best20=best20, specy=specy, data=data.diana_list)
     except:
         return render_template("error.html", error="there is a server error")
@@ -53,6 +54,7 @@ def mirdb(name, specy, best20):
         if data.mirdb_list=="error":
             return render_template("error.html", error="mirdb threw an error, please check your miRNA name")
 
+        print("in mirdb, diana list:",len(data.diana_list),"mirdb list:",len(data.mirdb_list))
         return render_template('mirdbsearchdone.html', name=name, best20=best20, specy=specy, data=data.mirdb_list)
     except:
         return render_template("error.html", error="there is a server error")
@@ -60,11 +62,13 @@ def mirdb(name, specy, best20):
 @app.route('/targetscan/<name>/<specy>/<best20>')
 def targetscan(name, specy, best20):
     try:
+        print("in target, diana list:",len(data.diana_list),"mirdb list:",len(data.mirdb_list))
         data.targetscan_list = targetscan_scrapper(name, best20, specy)
 
         if data.targetscan_list=="error":
             return render_template("error.html", error="targetscan threw an error, please check your miRNA name")
 
+        print("in target, diana list:",len(data.diana_list),"mirdb list:",len(data.mirdb_list),"target list:",len(data.targetscan_list))
         return render_template('targetscansearchdone.html', name=name, best20=best20, specy=specy, data=data.targetscan_list)
     except:
         return render_template("error.html", error="there is a server error")
