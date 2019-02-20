@@ -50,7 +50,6 @@ def diana(name, specy, best20):
 def mirdb(name, specy, best20):
     try:
         mirdb_list = mirdb_scrapper(name, best20, specy)
-        
         if mirdb_list=="error":
             return render_template("error.html", error="mirdb threw an error, please check your miRNA name")
 
@@ -75,6 +74,7 @@ def targetscan(name, specy, best20):
 @app.route('/results/<name>/<specy>/<best20>')
 def results(name, specy, best20):
     try:
+        print(len(data.diana_list),len(data.mirdb_list),len(data.targetscan_list))
         intersection = list_intersection(data.diana_list, data.mirdb_list, data.targetscan_list)
         data.final = sorter(intersection)
 
