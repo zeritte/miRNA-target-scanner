@@ -36,38 +36,36 @@ def hello_world():
 @app.route('/diana/<name>/<specy>/<best20>')
 def diana(name, specy, best20):
     try:
-        diana_list = diana_scrapper(name, best20, specy)
+        data.diana_list = diana_scrapper(name, best20, specy)
 
-        if diana_list=="error":
+        if data.diana_list=="error":
             return render_template("error.html", error="diana threw an error, please check your miRNA name")
 
-        data.diana_list = diana_list
-        return render_template('dianasearchdone.html', name=name, best20=best20, specy=specy, data=diana_list )
+        return render_template('dianasearchdone.html', name=name, best20=best20, specy=specy, data=data.diana_list)
     except:
         return render_template("error.html", error="there is a server error")
 
 @app.route('/mirdb/<name>/<specy>/<best20>')
 def mirdb(name, specy, best20):
     try:
-        mirdb_list = mirdb_scrapper(name, best20, specy)
-        if mirdb_list=="error":
+        data.mirdb_list = mirdb_scrapper(name, best20, specy)
+
+        if data.mirdb_list=="error":
             return render_template("error.html", error="mirdb threw an error, please check your miRNA name")
 
-        data.mirdb_list = mirdb_list
-        return render_template('mirdbsearchdone.html', name=name, best20=best20, specy=specy, data=mirdb_list)
+        return render_template('mirdbsearchdone.html', name=name, best20=best20, specy=specy, data=data.mirdb_list)
     except:
         return render_template("error.html", error="there is a server error")
 
 @app.route('/targetscan/<name>/<specy>/<best20>')
 def targetscan(name, specy, best20):
     try:
-        targetscan_list = targetscan_scrapper(name, best20, specy)
+        data.targetscan_list = targetscan_scrapper(name, best20, specy)
 
-        if targetscan_list=="error":
+        if data.targetscan_list=="error":
             return render_template("error.html", error="targetscan threw an error, please check your miRNA name")
 
-        data.targetscan_list = targetscan_list
-        return render_template('targetscansearchdone.html', name=name, best20=best20, specy=specy, data=targetscan_list)
+        return render_template('targetscansearchdone.html', name=name, best20=best20, specy=specy, data=data.targetscan_list)
     except:
         return render_template("error.html", error="there is a server error")
 
@@ -75,8 +73,8 @@ def targetscan(name, specy, best20):
 def results(name, specy, best20):
     try:
         print(len(data.diana_list),len(data.mirdb_list),len(data.targetscan_list))
-        intersection = list_intersection(data.diana_list, data.mirdb_list, data.targetscan_list)
-        data.final = sorter(intersection)
+        data.final = list_intersection(data.diana_list, data.mirdb_list, data.targetscan_list)
+        data.final = sorter(data.final)
 
         return render_template("dictprinter.html", data=data.final, lengthoflist=len(data.final))
     except:
